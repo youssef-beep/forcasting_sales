@@ -1,0 +1,37 @@
+cd C:\Users\hassi\Desktop\my_flask_app
+
+# Create a solid .gitignore for Python/Flask
+@"
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Envs & secrets
+.env
+.venv/
+venv/
+env/
+ENV/
+myenv/
+
+# Flask/coverage/build
+instance/
+*.db
+*.sqlite*
+*.log
+/.pytest_cache/
+/.mypy_cache/
+/coverage/
+/.coverage
+htmlcov/
+dist/
+build/
+
+# IDE & OS junk
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+"@ | Out-File -Encoding utf8 .gitignore

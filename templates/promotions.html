@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Promotions Analysis</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      header {
+        width: 100%;
+        background-color: #28a745;
+        color: white;
+        text-align: center;
+        padding: 20px 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      header h1 {
+        margin: 0;
+      }
+      .content {
+        width: 90%;
+        max-width: 1200px;
+        background: white;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin: 20px 0;
+      }
+      .form-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .form-section label {
+        margin: 10px 0;
+      }
+      .form-section select,
+      .form-section button {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        width: 200px;
+      }
+      .form-section button {
+        background-color: #28a745;
+        color: white;
+        cursor: pointer;
+      }
+      .form-section button:hover {
+        background-color: #218838;
+      }
+      .explanation {
+        margin: 20px 0;
+      }
+      .explanation h3 {
+        color: #333;
+      }
+      .plots {
+        margin: 20px 0;
+      }
+      .back-home {
+        display: inline-block;
+        margin: 20px 0;
+        padding: 10px 20px;
+        background-color: #28a745;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+      }
+      .back-home:hover {
+        background-color: #218838;
+      }
+      @media (max-width: 768px) {
+        .form-section {
+          width: 100%;
+        }
+        .form-section select,
+        .form-section button {
+          width: 90%;
+        }
+      }
+    </style>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Promotions Analysis</h1>
+    </header>
+    <div class="content">
+      <div class="plots">{{ promotion_plot | safe }}</div>
+
+      <div class="explanation">
+        <h3>Promotion Status vs. Average Quantity Sold</h3>
+        <p>
+          This plot compares the average quantity of products sold during
+          promotional periods and non-promotional periods.
+        </p>
+      </div>
+
+      <div class="explanation">
+        <h3>Statistical Test Results</h3>
+        <p><strong>T-Statistic:</strong> {{ t_stat }}</p>
+        <p><strong>P-Value:</strong> {{ p_value }}</p>
+        <p>
+          A low p-value (typically ≤ 0.05) indicates strong evidence against the
+          null hypothesis, suggesting that the promotions have a significant
+          impact on sales.
+        </p>
+
+        <!-- Explanation for specific T-statistic and P-value -->
+        <p>
+          With a T-statistic of 50.84, we see a very large difference between
+          the means of the two groups (promotion and non-promotion). This high
+          value suggests a substantial effect of promotions on sales.
+        </p>
+        <p>
+          The p-value of 0.0 (or very close to zero) indicates that this result
+          is highly statistically significant. This means we can reject the null
+          hypothesis (that promotions have no effect on sales) with great
+          confidence, implying that promotions indeed have a significant
+          positive impact on sales.
+        </p>
+      </div>
+
+      <div class="form-section">
+        <form method="post" action="{{ url_for('promotions') }}">
+          <label for="product">Select Product:</label>
+          <select name="product" id="product">
+            {% for product in products %}
+            <option value="{{ product }}">{{ product }}</option>
+            {% endfor %}
+          </select>
+
+          <label for="depot">Select Depot:</label>
+          <select name="depot" id="depot">
+            {% for depot in depots %}
+            <option value="{{ depot }}">{{ depot }}</option>
+            {% endfor %}
+          </select>
+
+          <button type="submit">Show Coefficient</button>
+        </form>
+      </div>
+
+      {% if coefficient is not none %}
+      <div class="explanation">
+        <h2>Promotion Impact Coefficient</h2>
+        <p>Product ID: {{ request.form.product }}</p>
+        <p>Depot ID: {{ request.form.depot }}</p>
+        <p>Non-Promotion Quantity: {{ non_promo_quantity }}</p>
+        <p>Promotion Quantity: {{ promo_quantity }}</p>
+        <p>Free Product Quantity: {{ free_product_quantity }}</p>
+        <p>Pack Sale Quantity: {{ pack_sale_quantity }}</p>
+        <p>Coefficient: {{ coefficient }}</p>
+        <p><strong>Explanation:</strong> {{ explanation }}</p>
+      </div>
+      {% else %}
+      <div class="explanation">
+        <p>{{ coefficient }}</p>
+      </div>
+      {% endif %}
+
+      <a href="{{ url_for('home') }}" class="back-home">Back to Home</a>
+    </div>
+  </body>
+</html>

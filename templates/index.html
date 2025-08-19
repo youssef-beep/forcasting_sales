@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Home Page</title>
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+        background: linear-gradient(to right, #ece9e6, #ffffff);
+        margin: 0;
+        padding: 0;
+        color: #333;
+      }
+      header {
+        background-color: #4caf50;
+        padding: 20px 0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      header h1 {
+        text-align: center;
+        color: white;
+        margin: 0;
+        font-size: 2.5em;
+      }
+      nav {
+        margin-top: 30px;
+        text-align: center;
+      }
+      nav ul {
+        list-style: none;
+        padding: 0;
+      }
+      nav ul li {
+        display: inline-block;
+        margin: 0 10px;
+      }
+      nav ul li a {
+        text-decoration: none;
+        color: white;
+        background-color: #4caf50;
+        padding: 15px 25px;
+        border-radius: 30px;
+        transition: background-color 0.3s, box-shadow 0.3s;
+        font-weight: bold;
+      }
+      nav ul li a:hover {
+        background-color: #45a049;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+      .content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 50px 20px;
+      }
+      .contact {
+        background-color: #f9f9f9;
+        padding: 30px;
+        margin-top: 50px;
+        text-align: center;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+      .contact h2 {
+        margin-top: 0;
+        color: #4caf50;
+        font-size: 2em;
+      }
+      .contact p {
+        margin: 5px 0;
+        font-size: 1.1em;
+      }
+      footer {
+        background-color: #4caf50;
+        padding: 10px 0;
+        text-align: center;
+        color: white;
+        position: fixed;
+        width: 100%;
+        bottom: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Home Page</h1>
+    </header>
+    <nav>
+      <ul>
+        <li><a href="{{ url_for('seasonality') }}">Seasonality Analysis</a></li>
+        <li><a href="{{ url_for('promotions') }}">Promotion Analysis</a></li>
+        <li><a href="{{ url_for('combined') }}">Combined Analysis</a></li>
+        <li><a href="{{ url_for('forecasting') }}">Sales Forecasting</a></li>
+        <li><a href="{{ url_for('sensitivity') }}">Sensitivity Analysis</a></li>
+      </ul>
+    </nav>
+    <div class="content">
+      <div class="contact">
+        <h2>Contact Us</h2>
+        <p>Phone: +1-234-567-8900</p>
+        <p>Email: info@example.com</p>
+      </div>
+    </div>
+    <footer>&copy; 2024 Your Company Name. All rights reserved.</footer>
+  </body>
+</html>

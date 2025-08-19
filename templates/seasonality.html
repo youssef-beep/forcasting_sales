@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Seasonality Analysis</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f4f8;
+        color: #333;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      header {
+        width: 100%;
+        background-color: #4caf50;
+        color: white;
+        text-align: center;
+        padding: 20px 0;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      header h1 {
+        margin: 0;
+      }
+      .content {
+        width: 90%;
+        max-width: 1200px;
+        background: white;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin: 20px 0;
+      }
+      .form-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .form-section label {
+        margin: 10px 0;
+      }
+      .form-section select,
+      .form-section button {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        width: 200px;
+      }
+      .form-section button {
+        background-color: #4caf50;
+        color: white;
+        cursor: pointer;
+      }
+      .form-section button:hover {
+        background-color: #45a049;
+      }
+      .explanation {
+        margin: 20px 0;
+      }
+      .explanation h3 {
+        color: #4caf50;
+      }
+      .plots {
+        margin: 20px 0;
+      }
+      .back-home {
+        display: inline-block;
+        margin: 20px 0;
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+      }
+      .back-home:hover {
+        background-color: #45a049;
+      }
+      @media (max-width: 768px) {
+        .form-section {
+          width: 100%;
+        }
+        .form-section select,
+        .form-section button {
+          width: 90%;
+        }
+      }
+    </style>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>Seasonality Analysis</h1>
+    </header>
+    <div class="content">
+      <div class="form-section">
+        <form method="post" action="{{ url_for('seasonality') }}">
+          <label for="product">Select Product:</label>
+          <select name="product" id="product">
+            {% for product in products %}
+            <option value="{{ product }}">{{ product }}</option>
+            {% endfor %}
+          </select>
+
+          <label for="depot">Select Depot:</label>
+          <select name="depot" id="depot">
+            {% for depot in depots %}
+            <option value="{{ depot }}">{{ depot }}</option>
+            {% endfor %}
+          </select>
+
+          <button type="submit">Show Coefficient</button>
+        </form>
+      </div>
+
+      {% if coefficient is not none %}
+      <div class="explanation">
+        <h2>Seasonal Coefficient</h2>
+        <p>Product ID: {{ request.form.product }}</p>
+        <p>Depot ID: {{ request.form.depot }}</p>
+        <p>Coefficient: {{ coefficient }}</p>
+        <p>Explanation: {{ explanation }}</p>
+      </div>
+      {% else %}
+      <div class="explanation">
+        <p>{{ explanation }}</p>
+      </div>
+      {% endif %}
+
+      <div class="plots">{{ original_plot | safe }}</div>
+      <div class="explanation">
+        <h3>Original Sales Data</h3>
+        <p>
+          This plot shows the original sales data over time. It represents the
+          raw sales data before any decomposition.
+        </p>
+        <p>
+          <strong>Analysis:</strong> The original sales data plot provides a
+          comprehensive view of the sales trends over the entire period. We can
+          observe significant fluctuations and spikes, which may indicate the
+          influence of seasonal factors, promotions, or other external
+          influences.
+        </p>
+        <p>
+          <strong>Conclusion:</strong> The raw data indicates variability in
+          sales, with distinct peaks and troughs that suggest the presence of
+          underlying patterns that need further analysis through decomposition.
+        </p>
+      </div>
+
+      <div class="plots">{{ trend_plot | safe }}</div>
+      <div class="explanation">
+        <h3>Trend</h3>
+        <p>
+          This plot shows the trend component of the sales data. The trend
+          indicates the overall direction in which the sales data is moving over
+          time.
+        </p>
+        <p>
+          <strong>Analysis:</strong> The trend plot reveals the long-term
+          movement in sales, eliminating short-term fluctuations and
+          seasonality. In this case, we can observe a general decline in sales
+          over the period, indicating potential issues such as market
+          saturation, changing customer preferences, or increased competition.
+        </p>
+        <p>
+          <strong>Conclusion:</strong> The downward trend is a cause for concern
+          and suggests the need for strategic interventions to boost sales, such
+          as marketing efforts, product innovations, or exploring new markets.
+        </p>
+      </div>
+
+      <div class="plots">{{ seasonal_plot | safe }}</div>
+      <div class="explanation">
+        <h3>Seasonality</h3>
+        <p>
+          This plot shows the seasonality component of the sales data.
+          Seasonality represents recurring patterns or cycles in sales data,
+          such as increased sales during holidays or specific months.
+        </p>
+        <p>
+          <strong>Analysis:</strong> The seasonality plot highlights regular,
+          periodic fluctuations in sales. We can observe peaks and troughs that
+          recur at consistent intervals, reflecting the impact of seasonal
+          events, holidays, or other recurring factors.
+        </p>
+        <p>
+          <strong>Conclusion:</strong> Understanding seasonality helps in
+          planning inventory, marketing campaigns, and staffing. Businesses can
+          leverage this information to optimize operations during peak periods
+          and strategize to boost sales during off-peak periods.
+        </p>
+      </div>
+
+      <div class="plots">{{ residual_plot | safe }}</div>
+      <div class="explanation">
+        <h3>Residuals</h3>
+        <p>
+          This plot shows the residual component of the sales data. Residuals
+          are the remaining fluctuations in the sales data after removing the
+          trend and seasonality components. They represent random noise or
+          unexplained variations.
+        </p>
+        <p>
+          <strong>Analysis:</strong> The residuals plot displays the irregular,
+          unpredictable variations in sales. High residuals might indicate
+          anomalies, outliers, or unexpected events impacting sales, such as
+          economic changes, competitor actions, or supply chain issues.
+        </p>
+        <p>
+          <strong>Conclusion:</strong> Analyzing residuals helps in identifying
+          factors not explained by trend or seasonality. It is essential for
+          improving forecasting models and understanding the full scope of
+          influences on sales.
+        </p>
+      </div>
+
+      <a href="{{ url_for('home') }}" class="back-home">Back to Home</a>
+    </div>
+  </body>
+</html>
